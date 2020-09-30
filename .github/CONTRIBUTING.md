@@ -259,6 +259,6 @@ Funds donated via Patreon go directly to support Evan You's full-time work on Vu
 
 ## Credits
 
-Thank you to all the people who have already contributed to Vue.js!
+Thank you to all the people who have already contributed to avu.js!
 
-<a href="https://github.com/vuejs/vue/graphs/contributors"><img src="https://opencollective.com/vuejs/contributors.svg?width=890" /></a>
+<a href="https://github.com/aimlabs-os/avu/graphs/contributors"> Contributors </a>
