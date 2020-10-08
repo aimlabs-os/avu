@@ -1,12 +1,12 @@
 {
-  "name": "@aimlabs/avu",
+  "name": "@aimlabs/avu-common",
   "version": "3.0.0.alpha1",
-  "description": "avu",
+  "description": "avu common",
   "main": "index.js",
-  "module": "dist/avu.esm-bundler.js",
-  "types": "dist/avu.d.ts",
-  "unpkg": "dist/avu.global.js",
-  "jsdelivr": "dist/avu.global.js",
+  "module": "dist/avu-common.esm-bundler.js",
+  "types": "dist/avu-common.d.ts",
+  "unpkg": "dist/avu-common.global.js",
+  "jsdelivr": "dist/avu-common.global.js",
   "files": [
     "index.js",
     "dist"
@@ -15,15 +15,12 @@
     "name": "Avu",
     "formats": [
       "esm-bundler",
-      "cjs",
-      "global",
-      "esm-browser"
+      "cjs"
     ]
   },
   "author": "Suresh Reddy",
   "license": "MIT",
   "dependencies": {
-    "@aimlabs/avu-common" : "^3.0.0"
   },
   "devDependencies": {
     "lodash": "^4.17.15",

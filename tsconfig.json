@@ -18,8 +18,8 @@
     // "types": ["jest", "puppeteer", "node"],
     "rootDir": ".",
     "paths": {
-      "@avu/*": ["packages/*/src"],
-      "avu": ["packages/vue/src"]
+      "@aimlabs/*": ["packages/*/src"],
+      "avu": ["packages/avu/src"]
     }
   },
   "include": [

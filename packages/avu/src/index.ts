@@ -1,1 +1,3 @@
-console.log('This is sample')
+import { VERSION } from '@aimlabs/avu-common'
+
+console.log('This is sample', VERSION)
