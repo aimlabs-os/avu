@@ -1,0 +1,35 @@
+{
+  "name": "avu",
+  "version": "3.0.0",
+  "description": "avu",
+  "main": "index.js",
+  "module": "dist/avu.runtime.esm-bundler.js",
+  "types": "dist/avu.d.ts",
+  "unpkg": "dist/avu.global.js",
+  "jsdelivr": "dist/avu.global.js",
+  "files": [
+    "index.js",
+    "dist"
+  ],
+  "buildOptions": {
+    "name": "Avu",
+    "formats": [
+      "esm-bundler",
+      "esm-bundler-runtime",
+      "cjs",
+      "global",
+      "global-runtime",
+      "esm-browser",
+      "esm-browser-runtime"
+    ]
+  },
+  "author": "Suresh Reddy",
+  "license": "MIT",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "lodash": "^4.17.15",
+    "marked": "^0.7.0",
+    "todomvc-app-css": "^2.3.0"
+  }
+}

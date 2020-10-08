@@ -34,20 +34,6 @@ const outputConfigs = {
   global: {
     file: resolve(`dist/${name}.global.js`),
     format: `iife`
-  },
-
-  // runtime-only builds, for main "vue" package only
-  'esm-bundler-runtime': {
-    file: resolve(`dist/${name}.runtime.esm-bundler.js`),
-    format: `es`
-  },
-  'esm-browser-runtime': {
-    file: resolve(`dist/${name}.runtime.esm-browser.js`),
-    format: 'es'
-  },
-  'global-runtime': {
-    file: resolve(`dist/${name}.runtime.global.js`),
-    format: 'iife'
   }
 }
 
@@ -203,7 +189,7 @@ function createReplacePlugin(
         `(process.env.NODE_ENV !== 'production')`
       : // hard coded dev/prod builds
         !isProduction,
-    // this is only used during Vue's internal tests
+    // this is only used during internal tests
     __TEST__: false,
     // If the build is expected to run directly in the browser (global / esm builds)
     __BROWSER__: isBrowserBuild,
@@ -215,10 +201,8 @@ function createReplacePlugin(
 
     // feature flags
     __FEATURE_SUSPENSE__: true,
-    __FEATURE_OPTIONS_API__: isBundlerESMBuild ? `__VUE_OPTIONS_API__` : true,
-    __FEATURE_PROD_DEVTOOLS__: isBundlerESMBuild
-      ? `__VUE_PROD_DEVTOOLS__`
-      : false,
+    __FEATURE_OPTIONS_API__: true,
+    __FEATURE_PROD_DEVTOOLS__: false,
     ...(isProduction && isBrowserBuild
       ? {
           'context.onError(': `/*#__PURE__*/ context.onError(`,

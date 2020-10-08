@@ -13,7 +13,7 @@ files.forEach(shortName => {
     return
   }
 
-  const name = shortName === `vue` ? shortName : `@vue/${shortName}`
+  const name = `@aimlabs/${shortName}`
   const pkgPath = path.join(packagesDir, shortName, `package.json`)
   const pkgExists = fs.existsSync(pkgPath)
   if (pkgExists) {
@@ -34,15 +34,15 @@ files.forEach(shortName => {
       types: `dist/${shortName}.d.ts`,
       repository: {
         type: 'git',
-        url: 'git+https://github.com/vuejs/vue.git'
+        url: 'git+https://github.com/aimlabs-os/avu.git'
       },
-      keywords: ['vue'],
-      author: 'Evan You',
+      keywords: ['avu'],
+      author: 'Suresh Reddy Guntaka',
       license: 'MIT',
       bugs: {
-        url: 'https://github.com/vuejs/vue/issues'
+        url: 'https://github.com/aimlabs-os/avu/issues'
       },
-      homepage: `https://github.com/vuejs/vue/tree/dev/packages/${shortName}#readme`
+      homepage: `https://github.com/aimlabs-os/avu/tree/develop/packages/${shortName}#readme`
     }
     fs.writeFileSync(pkgPath, JSON.stringify(json, null, 2))
   }

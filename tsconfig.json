@@ -15,11 +15,11 @@
     "removeComments": false,
     "jsx": "preserve",
     "lib": ["esnext", "dom"],
-    "types": ["jest", "puppeteer", "node"],
+    // "types": ["jest", "puppeteer", "node"],
     "rootDir": ".",
     "paths": {
-      "@vue/*": ["packages/*/src"],
-      "vue": ["packages/vue/src"]
+      "@avu/*": ["packages/*/src"],
+      "avu": ["packages/vue/src"]
     }
   },
   "include": [
