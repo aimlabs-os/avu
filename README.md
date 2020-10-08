@@ -1,2 +1,2 @@
 # avu
-A Vue - Vue 3 
+A Vue - Vue 3 UI Library

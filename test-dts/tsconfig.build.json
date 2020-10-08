@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "paths": {
+      "@aimlabs/*": ["../packages/*/dist"]
+    }
+  },
+  "exclude": ["../packages/*/__tests__", "../packages/*/src"],
+  "include": [
+    "../packages/global.d.ts",
+    "../packages/*/dist",
+    "../packages/*/__tests__",
+    "../test-dts"
+  ]
+}
