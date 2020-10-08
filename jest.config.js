@@ -24,15 +24,15 @@ module.exports = {
     // DOM transitions are tested via e2e so no coverage is collected
     '!packages/runtime-dom/src/components/Transition*',
     // only called in browsers
-    '!packages/vue/src/devCheck.ts',
+    '!packages/avu/src/devCheck.ts',
     // only used as a build entry
-    '!packages/vue/src/runtime.ts'
+    '!packages/avu/src/runtime.ts'
   ],
   watchPathIgnorePatterns: ['/node_modules/', '/dist/', '/.git/'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
   moduleNameMapper: {
-    '^@vue/(.*?)$': '<rootDir>/packages/$1/src',
-    vue: '<rootDir>/packages/vue/src'
+    '^@aimlabs/(.*?)$': '<rootDir>/packages/$1/src',
+    '@aimlabs/avu': '<rootDir>/packages/avu/src'
   },
   rootDir: __dirname,
   testMatch: ['<rootDir>/packages/**/__tests__/**/*spec.[jt]s?(x)'],
