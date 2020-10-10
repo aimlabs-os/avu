@@ -147,12 +147,15 @@ function createConfig(format, output, plugins = []) {
     // Global and Browser ESM builds inlines everything so that they can be
     // used alone.
     external,
-    plugins: [      
+    plugins: [
       vuePlugin(),
       postcss({
+        plugins: [
+          require('tailwindcss')
+        ],        
         extract: true,
-        minimize: true
-      }),
+        // minimize: true
+      }),            
       json({
         namedExports: false
       }),
