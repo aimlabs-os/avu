@@ -1,5 +1,5 @@
 <template>
-    <div> Sample Component </div>
+  <div> Sample Component </div>
 </template>
 <script lang="ts" setup>
 

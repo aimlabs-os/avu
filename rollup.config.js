@@ -14,7 +14,7 @@ const packagesDir = path.resolve(__dirname, 'packages')
 const packageDir = path.resolve(packagesDir, process.env.TARGET)
 const name = path.basename(packageDir)
 const pkgName = name === 'avu' ? name : `avu-${name}`
-const resolve = p => path.resolve(packageDir, p)
+const resolve = (p) => path.resolve(packageDir, p)
 const pkg = require(resolve(`package.json`))
 const packageOptions = pkg.buildOptions || {}
 
@@ -24,20 +24,20 @@ let hasTSChecked = false
 const outputConfigs = {
   'esm-bundler': {
     file: resolve(`dist/${pkgName}.esm-bundler.js`),
-    format: `es`
+    format: `es`,
   },
   'esm-browser': {
     file: resolve(`dist/${pkgName}.esm-browser.js`),
-    format: `es`
+    format: `es`,
   },
   cjs: {
     file: resolve(`dist/${pkgName}.cjs.js`),
-    format: `cjs`
+    format: `cjs`,
   },
   global: {
     file: resolve(`dist/${pkgName}.global.js`),
-    format: `iife`
-  }
+    format: `iife`,
+  },
 }
 
 const defaultFormats = ['esm-bundler', 'cjs']
@@ -45,10 +45,10 @@ const inlineFormats = process.env.FORMATS && process.env.FORMATS.split(',')
 const packageFormats = inlineFormats || packageOptions.formats || defaultFormats
 const packageConfigs = process.env.PROD_ONLY
   ? []
-  : packageFormats.map(format => createConfig(format, outputConfigs[format]))
+  : packageFormats.map((format) => createConfig(format, outputConfigs[format]))
 
 if (process.env.NODE_ENV === 'production') {
-  packageFormats.forEach(format => {
+  packageFormats.forEach((format) => {
     if (packageOptions.prod === false) {
       return
     }
@@ -93,17 +93,19 @@ function createConfig(format, output, plugins = []) {
       compilerOptions: {
         sourceMap: output.sourcemap,
         declaration: shouldEmitDeclarations,
-        declarationMap: shouldEmitDeclarations
+        declarationMap: shouldEmitDeclarations,
       },
-      exclude: ['**/__tests__', 'test-dts']
-    }
+      exclude: ['**/__tests__', 'test-dts'],
+    },
   })
   // we only need to check TS and generate declarations once for each build.
   // it also seems to run into weird issues when checking multiple times
   // during a single build.
   hasTSChecked = true
 
-  const entryFile = isProductionBuild ? `dist/${pkgName}.${format}.js` : `src/index.ts`
+  const entryFile = isProductionBuild
+    ? `dist/${pkgName}.${format}.js`
+    : `src/index.ts`
 
   const external =
     isGlobalBuild || isBrowserESMBuild
@@ -118,28 +120,27 @@ function createConfig(format, output, plugins = []) {
         [
           ...Object.keys(pkg.dependencies || {}),
           ...Object.keys(pkg.peerDependencies || {}),
-          ...['path', 'url']
+          ...['path', 'url'],
         ]
 
   // as a global (e.g. http://wzrd.in/standalone/postcss)
   output.globals = {
     postcss: 'postcss',
-    vue: 'vue'
+    vue: 'vue',
   }
 
   const nodePlugins =
     packageOptions.enableNonBrowserBranches && format !== 'cjs'
-      ? [          
+      ? [
           require('@rollup/plugin-node-resolve').nodeResolve({
-            preferBuiltins: true
+            preferBuiltins: true,
           }),
           require('@rollup/plugin-commonjs')({
             sourceMap: false,
-            extensions: ['.js', '.cjs']
+            extensions: ['.js', '.cjs'],
           }),
           require('rollup-plugin-node-builtins')(),
           require('rollup-plugin-node-globals')(),
-          
         ]
       : []
   return {
@@ -150,16 +151,14 @@ function createConfig(format, output, plugins = []) {
     plugins: [
       vuePlugin(),
       postcss({
-        plugins: [
-          require('tailwindcss')
-        ],        
+        plugins: [require('tailwindcss')],
         extract: true,
         // minimize: true
-      }),            
-      json({
-        namedExports: false
       }),
-      tsPlugin,      
+      json({
+        namedExports: false,
+      }),
+      tsPlugin,
       createReplacePlugin(
         isProductionBuild,
         isBundlerESMBuild,
@@ -171,18 +170,18 @@ function createConfig(format, output, plugins = []) {
         isNodeBuild
       ),
       ...nodePlugins,
-      ...plugins
+      ...plugins,
     ],
     output,
     onwarn: (msg, warn) => {
-      if (!/Circular/.test(msg) && msg.code !== "UNUSED_EXTERNAL_IMPORT") {
-        console.log(msg.code)
+      if (!/Circular/.test(msg) && msg.code !== 'UNUSED_EXTERNAL_IMPORT') {
+        // console.log(msg.code)
         warn(msg)
       }
     },
     treeshake: {
-      moduleSideEffects: false
-    }
+      moduleSideEffects: false,
+    },
   }
 }
 
@@ -221,13 +220,13 @@ function createReplacePlugin(
           'context.onError(': `/*#__PURE__*/ context.onError(`,
           'emitError(': `/*#__PURE__*/ emitError(`,
           'createCompilerError(': `/*#__PURE__*/ createCompilerError(`,
-          'createDOMCompilerError(': `/*#__PURE__*/ createDOMCompilerError(`
+          'createDOMCompilerError(': `/*#__PURE__*/ createDOMCompilerError(`,
         }
-      : {})
+      : {}),
   }
   // allow inline overrides like
   //__RUNTIME_COMPILE__=true yarn build runtime-core
-  Object.keys(replacements).forEach(key => {
+  Object.keys(replacements).forEach((key) => {
     if (key in process.env) {
       replacements[key] = process.env[key]
     }
@@ -238,7 +237,7 @@ function createReplacePlugin(
 function createProductionConfig(format) {
   return createConfig(format, {
     file: resolve(`dist/${name}.${format}.prod.js`),
-    format: outputConfigs[format].format
+    format: outputConfigs[format].format,
   })
 }
 
@@ -248,16 +247,16 @@ function createMinifiedConfig(format) {
     format,
     {
       file: outputConfigs[format].file.replace(/\.js$/, '.prod.js'),
-      format: outputConfigs[format].format
+      format: outputConfigs[format].format,
     },
     [
       terser({
         module: /^esm/.test(format),
         compress: {
           ecma: 2015,
-          pure_getters: true
-        }
-      })
+          pure_getters: true,
+        },
+      }),
     ]
   )
 }
