@@ -1,9 +1,9 @@
 {
-  "name": "@aimlabs/avu",
+  "name": "@aimlabs/avu-common",
   "version": "3.0.0-alpha.1",
-  "description": "@aimlabs/avu",
+  "description": "@aimlabs/avu-common",
   "main": "index.js",
-  "module": "dist/avu.esm-bundler.js",
+  "module": "dist/avu-common.esm-bundler.js",
   "files": [
     "index.js",
     "dist"
@@ -11,12 +11,10 @@
   "buildOptions": {
     "name": "Avu",
     "formats": [
-      "global",
-      "esm-bundler",
-      "cjs"
+      "esm-bundler"
     ]
-  },  
-  "types": "dist/avu.d.ts",
+  },
+  "types": "dist/avu-common.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aimlabs-os/avu.git"
@@ -29,9 +27,8 @@
   "bugs": {
     "url": "https://github.com/aimlabs-os/avu/issues"
   },
-  "homepage": "https://github.com/aimlabs-os/avu/tree/develop/packages/avu#readme",
+  "homepage": "https://github.com/aimlabs-os/avu/tree/develop/packages/common#readme",
   "dependencies": {
-    "@aimlabs/avu-common" : "^3.0.0-alpha.1",
     "vue" : "^3.0.0"
   }
 }

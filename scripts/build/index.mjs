@@ -13,16 +13,17 @@ yarn build dom
 yarn build core --formats cjs
 ```
 */
+import fs from "fs-extra"
+import path from "path"
+import chalk from "chalk"
+import execa from "execa"
+import { gzipSync } from "zlib"
+import brotli from "brotli"
+import { targets as allTargets, fuzzyMatchTarget, require } from "../utils/index.mjs"
+import minimist from "minimist"
 
-const fs = require('fs-extra')
-const path = require('path')
-const chalk = require('chalk')
-const execa = require('execa')
-const { gzipSync } = require('zlib')
-const { compress } = require('brotli')
-const { targets: allTargets, fuzzyMatchTarget } = require('./utils')
-
-const args = require('minimist')(process.argv.slice(2))
+const { compress } = brotli 
+const args = minimist(process.argv.slice(2))
 const targets = args._
 const formats = args.formats || args.f
 const devOnly = args.devOnly || args.d
@@ -31,7 +32,7 @@ const sourceMap = args.sourcemap || args.s
 const isRelease = args.release
 const buildTypes = args.t || args.types || isRelease
 const buildAllMatching = args.all || args.a
-const commit = execa.sync('git', ['rev-parse', 'HEAD']).stdout.slice(0, 7)
+// const commit = execa.sync('git', ['rev-parse', 'HEAD']).stdout.slice(0, 7)
 
 run()
 
@@ -78,7 +79,7 @@ async function build(target) {
       '-c',
       '--environment',
       [
-        `COMMIT:${commit}`,
+        // `COMMIT:${commit}`,
         `NODE_ENV:${env}`,
         `TARGET:${target}`,
         formats ? `FORMATS:${formats}` : ``,

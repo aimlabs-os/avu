@@ -1,4 +1,6 @@
 import path from 'path'
+import postcss from 'rollup-plugin-postcss'
+import vuePlugin from 'rollup-plugin-vue'
 import ts from 'rollup-plugin-typescript2'
 import replace from '@rollup/plugin-replace'
 import json from '@rollup/plugin-json'
@@ -11,6 +13,7 @@ const masterVersion = require('./package.json').version
 const packagesDir = path.resolve(__dirname, 'packages')
 const packageDir = path.resolve(packagesDir, process.env.TARGET)
 const name = path.basename(packageDir)
+const pkgName = name === 'avu' ? name : `avu-${name}`
 const resolve = p => path.resolve(packageDir, p)
 const pkg = require(resolve(`package.json`))
 const packageOptions = pkg.buildOptions || {}
@@ -20,19 +23,19 @@ let hasTSChecked = false
 
 const outputConfigs = {
   'esm-bundler': {
-    file: resolve(`dist/${name}.esm-bundler.js`),
+    file: resolve(`dist/${pkgName}.esm-bundler.js`),
     format: `es`
   },
   'esm-browser': {
-    file: resolve(`dist/${name}.esm-browser.js`),
+    file: resolve(`dist/${pkgName}.esm-browser.js`),
     format: `es`
   },
   cjs: {
-    file: resolve(`dist/${name}.cjs.js`),
+    file: resolve(`dist/${pkgName}.cjs.js`),
     format: `cjs`
   },
   global: {
-    file: resolve(`dist/${name}.global.js`),
+    file: resolve(`dist/${pkgName}.global.js`),
     format: `iife`
   }
 }
@@ -52,7 +55,7 @@ if (process.env.NODE_ENV === 'production') {
     if (format === 'cjs') {
       packageConfigs.push(createProductionConfig(format))
     }
-    if (/^(global|esm-browser)(-runtime)?/.test(format)) {
+    if (/^(global|esm-browser)?/.test(format)) {
       packageConfigs.push(createMinifiedConfig(format))
     }
   })
@@ -100,7 +103,7 @@ function createConfig(format, output, plugins = []) {
   // during a single build.
   hasTSChecked = true
 
-  const entryFile = /runtime$/.test(format) ? `src/runtime.ts` : `src/index.ts`
+  const entryFile = isProductionBuild ? `dist/${pkgName}.${format}.js` : `src/index.ts`
 
   const external =
     isGlobalBuild || isBrowserESMBuild
@@ -120,33 +123,40 @@ function createConfig(format, output, plugins = []) {
 
   // as a global (e.g. http://wzrd.in/standalone/postcss)
   output.globals = {
-    postcss: 'postcss'
+    postcss: 'postcss',
+    vue: 'vue'
   }
 
   const nodePlugins =
     packageOptions.enableNonBrowserBranches && format !== 'cjs'
-      ? [
+      ? [          
           require('@rollup/plugin-node-resolve').nodeResolve({
             preferBuiltins: true
           }),
           require('@rollup/plugin-commonjs')({
-            sourceMap: false
+            sourceMap: false,
+            extensions: ['.js', '.cjs']
           }),
           require('rollup-plugin-node-builtins')(),
-          require('rollup-plugin-node-globals')()
+          require('rollup-plugin-node-globals')(),
+          
         ]
       : []
-
   return {
     input: resolve(entryFile),
     // Global and Browser ESM builds inlines everything so that they can be
     // used alone.
     external,
-    plugins: [
+    plugins: [      
+      vuePlugin(),
+      postcss({
+        extract: true,
+        minimize: true
+      }),
       json({
         namedExports: false
       }),
-      tsPlugin,
+      tsPlugin,      
       createReplacePlugin(
         isProductionBuild,
         isBundlerESMBuild,
@@ -162,7 +172,8 @@ function createConfig(format, output, plugins = []) {
     ],
     output,
     onwarn: (msg, warn) => {
-      if (!/Circular/.test(msg)) {
+      if (!/Circular/.test(msg) && msg.code !== "UNUSED_EXTERNAL_IMPORT") {
+        console.log(msg.code)
         warn(msg)
       }
     },

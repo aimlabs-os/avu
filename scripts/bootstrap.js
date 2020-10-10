@@ -1,25 +1,24 @@
-// create package.json, README, etc. for packages that don't have them yet
+const args = require("minimist")(process.argv.slice(2));
+const fs = require("fs");
+const path = require("path");
+const version = require("../package.json").version;
 
-const args = require('minimist')(process.argv.slice(2))
-const fs = require('fs')
-const path = require('path')
-const version = require('../package.json').version
+const packagesDir = path.resolve(__dirname, "../packages");
+const files = fs.readdirSync(packagesDir);
 
-const packagesDir = path.resolve(__dirname, '../packages')
-const files = fs.readdirSync(packagesDir)
-
-files.forEach(shortName => {
+files.forEach((shortName) => {
   if (!fs.statSync(path.join(packagesDir, shortName)).isDirectory()) {
-    return
+    return;
   }
-
-  const name = `@aimlabs/${shortName}`
-  const pkgPath = path.join(packagesDir, shortName, `package.json`)
-  const pkgExists = fs.existsSync(pkgPath)
+  
+  const pkgName = shortName == "avu" ? "avu" : `avu-${shortName}`;
+  const name = `@aimlabs/${pkgName}`
+  const pkgPath = path.join(packagesDir, shortName, `package.json`);
+  const pkgExists = fs.existsSync(pkgPath);
   if (pkgExists) {
-    const pkg = require(pkgPath)
+    const pkg = require(pkgPath);
     if (pkg.private) {
-      return
+      return;
     }
   }
 
@@ -28,35 +27,35 @@ files.forEach(shortName => {
       name,
       version,
       description: name,
-      main: 'index.js',
-      module: `dist/${shortName}.esm-bundler.js`,
+      main: "index.js",
+      module: `dist/${pkgName}.esm-bundler.js`,
       files: [`index.js`, `dist`],
-      types: `dist/${shortName}.d.ts`,
+      types: `dist/${pkgName}.d.ts`,
       repository: {
-        type: 'git',
-        url: 'git+https://github.com/aimlabs-os/avu.git'
+        type: "git",
+        url: "git+https://github.com/aimlabs-os/avu.git",
       },
-      keywords: ['avu'],
-      author: 'Suresh Reddy Guntaka',
-      license: 'MIT',
+      keywords: ["avu"],
+      author: "Suresh Reddy Guntaka",
+      license: "MIT",
       bugs: {
-        url: 'https://github.com/aimlabs-os/avu/issues'
+        url: "https://github.com/aimlabs-os/avu/issues",
       },
-      homepage: `https://github.com/aimlabs-os/avu/tree/develop/packages/${shortName}#readme`
-    }
-    fs.writeFileSync(pkgPath, JSON.stringify(json, null, 2))
+      homepage: `https://github.com/aimlabs-os/avu/tree/develop/packages/${shortName}#readme`,
+    };
+    fs.writeFileSync(pkgPath, JSON.stringify(json, null, 2));
   }
 
-  const readmePath = path.join(packagesDir, shortName, `README.md`)
+  const readmePath = path.join(packagesDir, shortName, `README.md`);
   if (args.force || !fs.existsSync(readmePath)) {
-    fs.writeFileSync(readmePath, `# ${name}`)
+    fs.writeFileSync(readmePath, `# ${name}`);
   }
 
   const apiExtractorConfigPath = path.join(
     packagesDir,
     shortName,
     `api-extractor.json`
-  )
+  );
   if (args.force || !fs.existsSync(apiExtractorConfigPath)) {
     fs.writeFileSync(
       apiExtractorConfigPath,
@@ -69,19 +68,19 @@ files.forEach(shortName => {
   }
 }
 `.trim()
-    )
+    );
   }
 
-  const srcDir = path.join(packagesDir, shortName, `src`)
-  const indexPath = path.join(packagesDir, shortName, `src/index.ts`)
+  const srcDir = path.join(packagesDir, shortName, `src`);
+  const indexPath = path.join(packagesDir, shortName, `src/index.ts`);
   if (args.force || !fs.existsSync(indexPath)) {
     if (!fs.existsSync(srcDir)) {
-      fs.mkdirSync(srcDir)
+      fs.mkdirSync(srcDir);
     }
-    fs.writeFileSync(indexPath, ``)
+    fs.writeFileSync(indexPath, ``);
   }
 
-  const nodeIndexPath = path.join(packagesDir, shortName, 'index.js')
+  const nodeIndexPath = path.join(packagesDir, shortName, "index.js");
   if (args.force || !fs.existsSync(nodeIndexPath)) {
     fs.writeFileSync(
       nodeIndexPath,
@@ -89,11 +88,11 @@ files.forEach(shortName => {
 'use strict'
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = require('./dist/${shortName}.cjs.prod.js')
+  module.exports = require('./dist/${pkgName}.cjs.prod.js')
 } else {
-  module.exports = require('./dist/${shortName}.cjs.js')
+  module.exports = require('./dist/${pkgName}.cjs.js')
 }
-    `.trim() + '\n'
-    )
+    `.trim() + "\n"
+    );
   }
-})
+});
