@@ -14,7 +14,7 @@
       "esm-bundler"
     ]
   },
-  "types": "dist/avu-common.d.ts",
+  "types": "src/index.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aimlabs-os/avu.git"
